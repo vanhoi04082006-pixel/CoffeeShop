@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CoffeeShop\\CoffeeShop.csproj": {}
+    "E:\\CoffeeShop\\CoffeeShop.csproj": {}
   },
   "projects": {
-    "D:\\CoffeeShop\\CoffeeShop.csproj": {
+    "E:\\CoffeeShop\\CoffeeShop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CoffeeShop\\CoffeeShop.csproj",
+        "projectUniqueName": "E:\\CoffeeShop\\CoffeeShop.csproj",
         "projectName": "CoffeeShop",
-        "projectPath": "D:\\CoffeeShop\\CoffeeShop.csproj",
+        "projectPath": "E:\\CoffeeShop\\CoffeeShop.csproj",
         "packagesPath": "C:\\Users\\buiva\\.nuget\\packages\\",
-        "outputPath": "D:\\CoffeeShop\\obj\\",
+        "outputPath": "E:\\CoffeeShop\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -22,7 +22,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -30,8 +30,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows7.0": {
+            "targetAlias": "net9.0-windows",
             "projectReferences": {}
           }
         },
@@ -48,13 +48,9 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows7.0": {
+          "targetAlias": "net9.0-windows",
           "dependencies": {
-            "Microsoft.Data.SqlClient": {
-              "target": "Package",
-              "version": "[7.0.1, )"
-            },
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.9.1, )"
@@ -74,6 +70,9 @@
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
