@@ -19,7 +19,7 @@ namespace CoffeeShopManager
 
     public class MainForm : Form
     {
-        // Nhớ đổi lại tên Server của bạn nếu cần nhé
+        // Thay YOUR_SERVER_NAME bằng tên server thực tế của bạn
         private string connStr = @"Server=VANHOI12; Database=CoffeeShopDB; Trusted_Connection=True; TrustServerCertificate=True;";
 
         private Panel panelSidebar;
@@ -35,14 +35,14 @@ namespace CoffeeShopManager
 
         private void InitializeComponent()
         {
-            // 1. Cấu hình Form
+            // 1. Cấu hình Form chính
             this.Text = "Phần Mềm Quản Lý Quán Cà Phê";
-            this.Size = new Size(1100, 700); // Tăng size lên xíu để xem đủ 8 bảng cho rõ
+            this.Size = new Size(1100, 700); 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
             this.BackColor = Color.FromArgb(245, 245, 245);
 
-            // 2. Sidebar
+            // 2. Cấu hình Sidebar
             panelSidebar = new Panel();
             panelSidebar.Dock = DockStyle.Left;
             panelSidebar.Width = 220;
@@ -57,10 +57,8 @@ namespace CoffeeShopManager
             lblLogo.TextAlign = ContentAlignment.MiddleCenter;
             panelSidebar.Controls.Add(lblLogo);
 
-            // Thêm nút THOÁT ở dưới cùng
+            // Thêm các nút bấm (Hiển thị từ trên xuống)
             AddMenuButton("Thoát", () => Application.Exit(), DockStyle.Bottom);
-
-            // Thêm 8 nút bấm cho 8 bảng (Xếp ngược từ dưới lên để hiển thị đúng thứ tự từ trên xuống)
             AddMenuButton("Thanh Toán", () => LoadTableData("Payments", "Lịch Sử Thanh Toán"), DockStyle.Top);
             AddMenuButton("Chi Tiết Đơn", () => LoadTableData("OrderDetails", "Chi Tiết Đơn Hàng"), DockStyle.Top);
             AddMenuButton("Đơn Hàng", () => LoadTableData("Orders", "Danh Sách Đơn Hàng"), DockStyle.Top);
@@ -70,7 +68,7 @@ namespace CoffeeShopManager
             AddMenuButton("Sản Phẩm", () => LoadTableData("Products", "Danh Sách Sản Phẩm"), DockStyle.Top);
             AddMenuButton("Danh Mục", () => LoadTableData("Categories", "Danh Mục Sản Phẩm"), DockStyle.Top);
 
-            // 3. Header
+            // 3. Cấu hình Header
             panelHeader = new Panel();
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Height = 60;
@@ -85,7 +83,7 @@ namespace CoffeeShopManager
             lblHeaderTitle.TextAlign = ContentAlignment.MiddleCenter;
             panelHeader.Controls.Add(lblHeaderTitle);
 
-            // 4. DataGridView
+            // 4. Cấu hình DataGridView (Khu vực hiển thị dữ liệu)
             panelMain = new Panel();
             panelMain.Dock = DockStyle.Fill;
             panelMain.Padding = new Padding(20);
@@ -101,6 +99,7 @@ namespace CoffeeShopManager
             dgvData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvData.RowHeadersVisible = false;
 
+            // Trang trí bảng
             dgvData.EnableHeadersVisualStyles = false;
             dgvData.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(141, 110, 99);
             dgvData.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
@@ -117,12 +116,13 @@ namespace CoffeeShopManager
             this.Controls.Add(panelSidebar);
         }
 
+        // Hàm tạo nút bấm Sidebar
         private void AddMenuButton(string text, Action onClickAction, DockStyle dockStyle)
         {
             Button btn = new Button();
             btn.Text = "  " + text;
             btn.Dock = dockStyle;
-            btn.Height = 50; // Chỉnh nhỏ lại xíu để vừa 8 nút
+            btn.Height = 50; 
             btn.FlatStyle = FlatStyle.Flat;
             btn.FlatAppearance.BorderSize = 0;
             btn.ForeColor = Color.White;
@@ -130,6 +130,7 @@ namespace CoffeeShopManager
             btn.TextAlign = ContentAlignment.MiddleLeft;
             btn.Cursor = Cursors.Hand;
 
+            // Hiệu ứng di chuột
             btn.MouseEnter += (s, e) => btn.BackColor = Color.FromArgb(78, 52, 46);
             btn.MouseLeave += (s, e) => btn.BackColor = Color.Transparent;
 
@@ -139,7 +140,7 @@ namespace CoffeeShopManager
             btn.BringToFront();
         }
 
-        // HÀM XỬ LÝ CHÍNH: TẢI VÀ VIỆT HÓA 8 BẢNG
+        // Hàm lấy dữ liệu từ SQL và cấu hình cột hiển thị
         private void LoadTableData(string tableName, string title)
         {
             lblHeaderTitle.Text = title.ToUpper();
@@ -151,7 +152,6 @@ namespace CoffeeShopManager
                     conn.Open();
                     string sql = "";
 
-                    // Sử dụng switch-case để gán câu lệnh SQL tương ứng cho từng bảng
                     switch (tableName)
                     {
                         case "Categories":
@@ -192,7 +192,6 @@ namespace CoffeeShopManager
                             break;
 
                         case "Orders":
-                            // Nối 4 bảng: Đơn Hàng + Nhân Viên + Khách Hàng + Bàn
                             sql = @"SELECT 
                                         o.OrderID AS [Mã Đơn], 
                                         o.OrderDate AS [Thời Gian Lập], 
@@ -206,7 +205,6 @@ namespace CoffeeShopManager
                             break;
 
                         case "OrderDetails":
-                            // Nối bảng Chi Tiết Đơn với bảng Sản Phẩm và nhân cột Thành Tiền
                             sql = @"SELECT 
                                         od.OrderID AS [Mã Đơn Hàng], 
                                         p.ProductName AS [Tên Đồ Uống], 
