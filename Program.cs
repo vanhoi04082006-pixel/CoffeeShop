@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+using System.IO; // Thư viện để đọc/ghi file cấu hình
 
 namespace CoffeeShopManager
 {
@@ -20,9 +21,9 @@ namespace CoffeeShopManager
 
     public class MainForm : Form
     {
-        // Chuỗi kết nối SQL Server
-        private string connStr =
-            @"Server=VANHOI12; Database=CoffeeShopDB; Trusted_Connection=True; TrustServerCertificate=True;";
+        // Biến lưu tên file cấu hình và tên Server
+        private string configFilePath = "server_config.txt";
+        private string serverName = "";
 
         private Panel panelSidebar;
         private Panel panelHeader;
@@ -44,6 +45,80 @@ namespace CoffeeShopManager
         public MainForm()
         {
             InitializeComponent();
+            
+            // Chạy hàm kiểm tra và cấu hình kết nối ngay khi khởi động form
+            EnsureDatabaseConnection();
+        }
+
+        // =====================================
+        // XỬ LÝ CHUỖI KẾT NỐI ĐỘNG
+        // =====================================
+        private string GetConnectionString()
+        {
+            return $@"Server={serverName}; Database=CoffeeShopDB; Trusted_Connection=True; TrustServerCertificate=True;";
+        }
+
+        private void EnsureDatabaseConnection()
+        {
+            bool isConnected = false;
+
+            // 1. Nếu đã có file lưu cấu hình thì đọc từ file và test kết nối
+            if (File.Exists(configFilePath))
+            {
+                serverName = File.ReadAllText(configFilePath).Trim();
+                isConnected = TestConnection(GetConnectionString());
+            }
+
+            // 2. Vòng lặp yêu cầu nhập Server nếu chưa kết nối được (chưa có file hoặc file sai)
+            while (!isConnected)
+            {
+                serverName = Interaction.InputBox(
+                    "Vui lòng nhập tên SQL Server của máy bạn (Ví dụ: .\\SQLEXPRESS hoặc TÊN_MÁY):\n\n(Lưu ý: Nếu nhấn Cancel hoặc để trống, phần mềm sẽ thoát)",
+                    "Cấu Hình Database Lần Đầu",
+                    serverName);
+
+                // Nếu người dùng bấm Cancel hoặc không nhập gì -> Thoát ứng dụng
+                if (string.IsNullOrWhiteSpace(serverName))
+                {
+                    Environment.Exit(0);
+                }
+
+                // Thử kết nối với tên Server vừa nhập
+                string tempConnStr = GetConnectionString();
+                isConnected = TestConnection(tempConnStr);
+
+                if (isConnected)
+                {
+                    // Nếu thành công -> Lưu lại vào file text để lần sau không hỏi nữa
+                    File.WriteAllText(configFilePath, serverName);
+                    MessageBox.Show("Kết nối Database thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    // Nếu thất bại -> Báo lỗi và vòng lặp sẽ quay lại hộp thoại nhập
+                    MessageBox.Show(
+                        "Kết nối thất bại!\n\nVui lòng kiểm tra lại:\n1. Tên Server đã nhập đúng chưa.\n2. SQL Server đang chạy.\n3. Đã có Database tên là 'CoffeeShopDB'.", 
+                        "Lỗi kết nối", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private bool TestConnection(string connectionString)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void InitializeComponent()
@@ -285,8 +360,9 @@ namespace CoffeeShopManager
 
             try
             {
+                // GỌI HÀM GetConnectionString() TẠI ĐÂY
                 using (SqlConnection conn =
-                    new SqlConnection(connStr))
+                    new SqlConnection(GetConnectionString()))
                 {
                     conn.Open();
 
@@ -456,7 +532,7 @@ namespace CoffeeShopManager
             }
 
             using (SqlConnection conn =
-                new SqlConnection(connStr))
+                new SqlConnection(GetConnectionString()))
             {
                 conn.Open();
 
@@ -574,7 +650,7 @@ namespace CoffeeShopManager
             }
 
             using (SqlConnection conn =
-                new SqlConnection(connStr))
+                new SqlConnection(GetConnectionString()))
             {
                 conn.Open();
 
@@ -652,7 +728,7 @@ namespace CoffeeShopManager
             if (result == DialogResult.Yes)
             {
                 using (SqlConnection conn =
-                    new SqlConnection(connStr))
+                    new SqlConnection(GetConnectionString()))
                 {
                     conn.Open();
 
